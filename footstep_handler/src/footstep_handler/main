@@ -1,0 +1,40 @@
+#!/usr/bin/env python
+import rospy
+import time
+import strings
+from geometry_msgs.msg import PoseStamped
+
+from goalHandler import GoalHandler
+from error import Error
+import actionlib
+
+#from chores.msg
+
+from move_base_msgs.msg import MoveBaseAction
+
+maxSteps = 20
+
+
+
+
+rospy.init_node('path_handler', anonymous=True,disable_signals=False)
+#rospy.Subscriber(strings.goal_topic, PoseStamped, goal_callback)
+goalHandler = GoalHandler(maxSteps)
+
+rospy.loginfo('Waiting for goal')
+"""
+while not rospy.is_shutdown():
+    if goalHandler.goal() is not None:
+        status = goalHandler.handleGoal()
+        if status == Error.OK:
+            rospy.loginfo('Robot reached destination')
+        else:
+            rospy.logerr("Robot did not reach goal")
+        goalHandler.clear()        
+        rospy.loginfo('Waiting for goal')
+    else:
+        r.sleep()
+"""        
+        
+rospy.spin()
+ 

@@ -1,0 +1,32 @@
+#!/usr/bin/env python
+import  rospy
+from std_msgs.msg import Header
+from geometry_msgs.msg import Pose ,PoseStamped, PoseWithCovarianceStamped
+
+import strings
+pub_pose_topic = "pose_simple"
+
+last_pose = None
+Hz = 10
+def pose_callback(pose_with_cov):    
+    global last_pose
+    if pose_with_cov is not None:
+        last_pose = pose_with_cov.pose.pose
+
+if __name__ == '__main__':
+    rospy.init_node('send_pose', anonymous=True)
+    rospy.Subscriber(strings.pose_topic, PoseWithCovarianceStamped, pose_callback)    
+    pub = rospy.Publisher(pub_pose_topic, PoseStamped, queue_size=10)
+    rate = rospy.Rate(Hz) # 10hz
+    
+    while not rospy.is_shutdown():
+        if last_pose is not None:
+            simple_pose = PoseStamped()
+            simple_pose.header=Header()
+            simple_pose.header.frame_id=strings.map_frame
+            simple_pose.pose = last_pose
+            pub.publish(simple_pose)
+        rate.sleep()
+        
+    rospy.spin()
+ 

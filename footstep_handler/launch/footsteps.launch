@@ -1,0 +1,25 @@
+<?xml version="1.0"?>
+<launch>
+<!--     <param name="robot_description" textfile="/home/master/timestorm_ws/src/naoqi_driver/share/urdf/nao.urdf"/> -->
+    <param name="robot_description" textfile="$(find nao_walk)/share/urdf/nao.urdf"/>
+<!--     $(find footstep_handler) -->
+<!--     <remap from="nao_robot/odom" to="odom"/> -->
+<!--     <include file="$(find nao_walk)/launch/gait_control.launch" />   -->
+    <include file="$(find rplidar_ros)/launch/rplidar.launch"/>
+    <include file="$(find nao_amcl)/launch/localization.launch" /> 
+    <include file="$(find nao_com)/launch/connect.launch" /> 
+
+    <include file="$(find footstep_handler)/launch/rviz_footstep_planning.launch" />  
+   
+    <node name="send_pose" pkg="footstep_handler" type="send_pose"  />
+    <node name="path_handler" pkg="footstep_handler" type="main"  output="screen" />
+    
+    
+    <node name="footstep_planner" pkg="footstep_planner" type="footstep_planner_node" output="screen" > 
+        <rosparam file="$(find footstep_handler)/config/cost_params.yaml" command="load" />
+        <rosparam file="$(find footstep_handler)/config/footsteps.yaml" command="load" />
+        <rosparam file="$(find footstep_handler)/config/planning_params.yaml" command="load" />
+        <remap from="goal" to="goal_inactive"/>
+    </node>
+
+</launch> 
